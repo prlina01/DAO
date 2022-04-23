@@ -26,7 +26,7 @@ const {API_URL, PRIVATE_KEY, ETHERSCAN_API_KEY} = process.env;
 
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.4",
+  solidity: "0.8.10",
   networks: {
     hardhat: {},
     rinkeby: {
