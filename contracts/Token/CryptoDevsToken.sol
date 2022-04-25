@@ -3,11 +3,11 @@ pragma solidity ^0.8.10;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./ICryptoDevs.sol";
+import "./ICryptoDevsNFT.sol";
 
-contract FunToken is ERC20, Ownable {
+contract CryptoDevsToken is ERC20, Ownable {
 
-    ICryptoDevs CryptoDevsNFT;
+    ICryptoDevsNFT CryptoDevsNFT;
 
     uint256 public constant tokensPerNFT = 10 * 10 ** 18;
     uint256 public constant tokenPrice = 0.001 ether;
@@ -16,7 +16,7 @@ contract FunToken is ERC20, Ownable {
     mapping(uint256 => bool) public tokenIdsClaimed;
 
     constructor(address _cryptoDevsContract) ERC20("Crypto Dev Token", "CD") {
-        CryptoDevsNFT = ICryptoDevs(_cryptoDevsContract);
+        CryptoDevsNFT = ICryptoDevsNFT(_cryptoDevsContract);
     }
 
     function mint(uint256 amount) public payable {
