@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.4;
 
 
 contract Whitelist {
@@ -22,6 +22,11 @@ contract Whitelist {
         addAddressToWhitelist - This function adds the address of the sender to the
         whitelist
      */
+
+    function getWhitelistAddresses() public view returns(bool) {
+        return whitelistedAddresses[msg.sender];
+    }
+
     function addAddressToWhitelist() public {
         // check if the user has already been whitelisted
         require(!whitelistedAddresses[msg.sender], "Sender has already been whitelisted");
