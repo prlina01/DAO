@@ -31,12 +31,12 @@ const config: HardhatUserConfig = {
     hardhat: {},
     rinkeby: {
       url: API_URL,
-      accounts: [`0x${PRIVATE_KEY}`]
+      accounts: [`0x${PRIVATE_KEY}`],
     },
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
+    goerli: {
+      url: process.env.GOERLI_URL || "",
       accounts:
-          process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+          process.env.PRIVATE_KEY !== undefined ? [`0x${PRIVATE_KEY}`] : [],
     },
   },
   gasReporter: {

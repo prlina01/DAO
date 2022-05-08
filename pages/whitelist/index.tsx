@@ -41,7 +41,7 @@ export default function Home() {
 	}
 
 	const getNumberOfWhitelisted = async () => {
-		const provider = new ethers.providers.AlchemyProvider('rinkeby')
+		const provider = new ethers.providers.AlchemyProvider('goerli')
 		const whitelistContract = new ethers.Contract(
 			WHITELIST_CONTRACT_ADDRESS,
 			Whitelist.abi,
@@ -56,12 +56,12 @@ export default function Home() {
 		const web3Modal = new Web3Modal()
 		const connection = await web3Modal.connect()
 		let provider = new ethers.providers.Web3Provider(connection)
-		const { chainId } = await provider.getNetwork();
-		if (chainId !== 4) {
-			window.alert("Change the network to Rinkeby");
-			// throw new Error("Change network to Rinkeby");
-			return
-		}
+		// const { chainId } = await provider.getNetwork();
+		// if (chainId !== 4) {
+		// 	window.alert("Change the network to Rinkeby");
+		// 	// throw new Error("Change network to Rinkeby");
+		// 	return
+		// }
 		let signer = provider.getSigner()
 
 		const whitelistContract = new ethers.Contract(

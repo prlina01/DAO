@@ -9,6 +9,7 @@ const main = async () => {
 	const nft = await NFT.deploy('crypto_devs_nfts', whitelist.address)
 	await nft.deployed()
 
+
 	const CryptoDevsToken = await ethers.getContractFactory('CryptoDevsToken');
 	const cryptoDevsToken = await CryptoDevsToken.deploy(nft.address)
 	await cryptoDevsToken.deployed()
