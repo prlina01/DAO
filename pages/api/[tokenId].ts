@@ -17,11 +17,11 @@ export default function handler(
 ) {
   const tokenId = req.query.tokenId;
 
-  const name = `Crypto Dev #${tokenId}`
-  const description = 'This token is coooool!'
-  const image=`https://raw.githubusercontent.com/prlina01/DAO/master/public/nfts/${Number(tokenId) - 1}.svg`
+  const image_url = 'https://raw.githubusercontent.com/prlina01/DAO/master/public/nfts/'
 
-  return res.json({
-    name, description, image
-  })
+  res.status(200).json({
+    name: "Crypto Dev #" + tokenId,
+    description: "This token is really cool",
+    image: image_url + tokenId + ".svg",
+  });
 }
