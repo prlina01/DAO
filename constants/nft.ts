@@ -1,4 +1,5 @@
 import NFT from '../artifacts/contracts/NFT/CryptoDevsNFT.sol/CryptoDevsNFT.json'
 
-export const NFT_CONTRACT_ADDRESS="0xD32E20ae7a6A9886Fe95BF51813224669Aaa2C9F"
+export const NFT_CONTRACT_ADDRESS="0xeE0f4Df4b2f342678aD3EEf3B5e20a2150b7e222"
 export const ABI = NFT.abi
+export const METADATA_URL = "https://dao-flame.vercel.app/api/"

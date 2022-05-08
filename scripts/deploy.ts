@@ -1,4 +1,5 @@
 import {ethers} from 'hardhat';
+import {METADATA_URL} from '../constants/nft'
 
 const main = async () => {
 	const Whitelist = await ethers.getContractFactory('Whitelist')
@@ -6,7 +7,7 @@ const main = async () => {
 	await whitelist.deployed()
 
 	const NFT = await ethers.getContractFactory('CryptoDevsNFT')
-	const nft = await NFT.deploy('crypto_devs_nfts', whitelist.address)
+	const nft = await NFT.deploy(METADATA_URL, whitelist.address)
 	await nft.deployed()
 
 
