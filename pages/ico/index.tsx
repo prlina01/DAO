@@ -193,7 +193,7 @@ export default function Home() {
 	useEffect(() => {
 		if (!walletConnected) {
 			web3ModalRef.current = new Web3Modal({
-				network: "goerli",
+				network: "mumbai",
 				providerOptions: {},
 				disableInjectedProvider: false,
 			});

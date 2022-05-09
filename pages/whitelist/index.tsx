@@ -41,7 +41,7 @@ export default function Home() {
 	}
 
 	const getNumberOfWhitelisted = async () => {
-		const provider = new ethers.providers.AlchemyProvider('goerli')
+		const provider = new ethers.providers.AlchemyProvider('maticmum')
 		const whitelistContract = new ethers.Contract(
 			WHITELIST_CONTRACT_ADDRESS,
 			Whitelist.abi,
