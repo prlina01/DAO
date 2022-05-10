@@ -16,6 +16,18 @@ const main = async () => {
 	await cryptoDevsToken.deployed()
 
 	console.log('Whitelist: ', whitelist.address, '\nNFT: ', nft.address, '\nToken: ', cryptoDevsToken.address)
+
+	const FakeNFTMarketplace = await ethers.getContractFactory(
+		"FakeNFTMarketplace"
+	);
+	const fakeNftMarketplace = await FakeNFTMarketplace.deploy();
+	await fakeNftMarketplace.deployed();
+
+	const Dao = await ethers.getContractFactory("DAO");
+	const dao = await Dao.deploy(fakeNftMarketplace.address, nft.address, {value: ethers.utils.parseEther('0.1')});
+	await dao.deployed();
+
+	console.log('FakeNFTMarketplace: ', fakeNftMarketplace.address, '\nDao deployed to: ', dao.address )
 }
 
 main()
