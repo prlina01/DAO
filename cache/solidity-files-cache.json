@@ -737,8 +737,8 @@
       ]
     },
     "/home/golux/Desktop/solidity-dev/ICO-dapp/contracts/DAO/DAO.sol": {
-      "lastModificationDate": 1652008749560,
-      "contentHash": "259b681433b2b94b77f73d4bb618def6",
+      "lastModificationDate": 1652097975188,
+      "contentHash": "a69cff3de98f8ade6e1a299a91a71c92",
       "sourceName": "contracts/DAO/DAO.sol",
       "solcConfig": {
         "version": "0.8.10",
@@ -771,7 +771,43 @@
       ],
       "artifacts": [
         "DAO",
-        "ICryptoDevsNFT"
+        "ICryptoDevsNFT",
+        "IFakeNFTMarketplace"
+      ]
+    },
+    "/home/golux/Desktop/solidity-dev/ICO-dapp/contracts/DAO/FakeNFTMarketplace.sol": {
+      "lastModificationDate": 1652097776314,
+      "contentHash": "852e8f5438fb998c947ca3c5631df0c1",
+      "sourceName": "contracts/DAO/FakeNFTMarketplace.sol",
+      "solcConfig": {
+        "version": "0.8.10",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.10"
+      ],
+      "artifacts": [
+        "FakeNFTMarketplace"
       ]
     }
   }

@@ -21,13 +21,25 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface DAOInterface extends ethers.utils.Interface {
   functions: {
+    "createProposal(uint256)": FunctionFragment;
+    "executeProposal(uint256)": FunctionFragment;
     "numProposals()": FunctionFragment;
     "owner()": FunctionFragment;
     "proposals(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "voteOnProposal(uint256,uint8)": FunctionFragment;
+    "withdrawEther()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "createProposal",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "executeProposal",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "numProposals",
     values?: undefined
@@ -45,7 +57,23 @@ interface DAOInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(
+    functionFragment: "voteOnProposal",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawEther",
+    values?: undefined
+  ): string;
 
+  decodeFunctionResult(
+    functionFragment: "createProposal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "executeProposal",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "numProposals",
     data: BytesLike
@@ -58,6 +86,14 @@ interface DAOInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "voteOnProposal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawEther",
     data: BytesLike
   ): Result;
 
@@ -116,6 +152,16 @@ export class DAO extends BaseContract {
   interface: DAOInterface;
 
   functions: {
+    createProposal(
+      _nftTokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    executeProposal(
+      proposalIndex: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     numProposals(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
@@ -141,7 +187,27 @@ export class DAO extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    voteOnProposal(
+      proposalIndex: BigNumberish,
+      vote: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    withdrawEther(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
+
+  createProposal(
+    _nftTokenId: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  executeProposal(
+    proposalIndex: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   numProposals(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -169,7 +235,27 @@ export class DAO extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  voteOnProposal(
+    proposalIndex: BigNumberish,
+    vote: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  withdrawEther(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
+    createProposal(
+      _nftTokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    executeProposal(
+      proposalIndex: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     numProposals(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
@@ -193,6 +279,14 @@ export class DAO extends BaseContract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    voteOnProposal(
+      proposalIndex: BigNumberish,
+      vote: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    withdrawEther(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -214,6 +308,16 @@ export class DAO extends BaseContract {
   };
 
   estimateGas: {
+    createProposal(
+      _nftTokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    executeProposal(
+      proposalIndex: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     numProposals(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
@@ -231,9 +335,29 @@ export class DAO extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    voteOnProposal(
+      proposalIndex: BigNumberish,
+      vote: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    withdrawEther(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    createProposal(
+      _nftTokenId: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    executeProposal(
+      proposalIndex: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     numProposals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -249,6 +373,16 @@ export class DAO extends BaseContract {
 
     transferOwnership(
       newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    voteOnProposal(
+      proposalIndex: BigNumberish,
+      vote: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    withdrawEther(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

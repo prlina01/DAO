@@ -69,6 +69,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ICryptoDevsNFT__factory>;
     getContractFactory(
+      name: "IFakeNFTMarketplace",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IFakeNFTMarketplace__factory>;
+    getContractFactory(
+      name: "FakeNFTMarketplace",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.FakeNFTMarketplace__factory>;
+    getContractFactory(
       name: "CryptoDevsNFT",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.CryptoDevsNFT__factory>;
@@ -159,6 +167,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ICryptoDevsNFT>;
+    getContractAt(
+      name: "IFakeNFTMarketplace",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IFakeNFTMarketplace>;
+    getContractAt(
+      name: "FakeNFTMarketplace",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.FakeNFTMarketplace>;
     getContractAt(
       name: "CryptoDevsNFT",
       address: string,

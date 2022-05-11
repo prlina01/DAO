@@ -40,7 +40,7 @@ const config: HardhatUserConfig = {
     },
     mumbai: {
       url: process.env.MUMBAI_URL,
-      accounts: [`0x${PRIVATE_KEY}`]
+      accounts: [`0x${PRIVATE_KEY}`],
     }
   },
   gasReporter: {
