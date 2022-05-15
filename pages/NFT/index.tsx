@@ -6,6 +6,8 @@ import {NFT_CONTRACT_ADDRESS, ABI } from "../../constants/nft";
 
 import styles from "/styles/Home.module.css";
 import {JsonRpcSigner} from "@ethersproject/providers";
+import {Button, Container, Text} from "@nextui-org/react";
+import Link from "next/link";
 
 export default function Home() {
 	const [walletConnected, setWalletConnected] = useState(false);
@@ -282,10 +284,18 @@ export default function Home() {
 				<title>Crypto Devs</title>
 				<meta name="description" content="NFT" />
 				<link rel="icon" href="/favicon.ico" />
-				</Head>
+			</Head>
+			<Container xs>
+				<Button.Group size="xl"  color="default">
+					<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
+					<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
+					<Link href={'/NFT'}><Button><Text color="white" >Mint NFTs</Text></Button></Link>
+					<Link href={'/whitelist'}><Button><Text color="black" >Start whitelist</Text></Button></Link>
+				</Button.Group>
+			</Container>
 		<div className={styles.main}>
 			<div>
-				<h1 className={styles.title}>Welcome to Crypto Devs!</h1>
+				<h1 className={styles.title}>Welcome to WestPunks NFT minting!</h1>
 				<div className={styles.description}>
 					Its an NFT collection for developers in Crypto.
 				</div>

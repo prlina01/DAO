@@ -6,6 +6,8 @@ import {NFT_CONTRACT_ABI, NFT_CONTRACT_ADDRESS, TOKEN_CONTRACT_ABI, TOKEN_CONTRA
 import styles from "/styles/Home.module.css";
 import {JsonRpcSigner} from "@ethersproject/providers";
 import {parseEther} from "ethers/lib/utils";
+import {Button, Container, Text} from "@nextui-org/react";
+import Link from "next/link";
 
 export default function Home() {
 	// Create a BigNumber `0`
@@ -262,18 +264,26 @@ export default function Home() {
 				<meta name="description" content="ICO-Dapp" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
+			<Container xs>
+				<Button.Group size="xl"  color="default">
+					<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
+					<Link href={'/ico'}><Button><Text color="white" >ICO</Text></Button></Link>
+					<Link href={'/NFT'}><Button><Text color="black" >Mint NFTs</Text></Button></Link>
+					<Link href={'/whitelist'}><Button><Text color="black" >Start whitelist</Text></Button></Link>
+				</Button.Group>
+			</Container>
 			<div className={styles.main}>
 				<div>
-					<h1 className={styles.title}>Welcome to Crypto Devs ICO!</h1>
+					<h1 className={styles.title}>Welcome to WestPunks ICO!</h1>
 					<div className={styles.description}>
-						You can claim or mint Crypto Dev tokens here
+						You can claim or mint WestPunks tokens here
 					</div>
 				{walletConnected ? (
 					<div>
 						<div className={styles.description}>
 							{/* Format Ether helps us in converting a BigNumber to string */}
 							You have minted {utils.formatEther(balanceOfCryptoDevTokens)}{" "}
-							Crypto Dev Tokens
+							WestPunks Tokens
 						</div>
 						<div className={styles.description}>
 							{/* Format Ether helps us in converting a BigNumber to string */}
@@ -289,7 +299,7 @@ export default function Home() {
 				)}
 				</div>
 				<div>
-					<img className={styles.image} src="/crypto-devs.svg" />
+					<img className={styles.image} src="/nfts/3.svg" />
 				</div>
 			</div>
 			<footer className={styles.footer}>

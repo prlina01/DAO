@@ -4,17 +4,41 @@ import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import Web3Modal from "web3modal";
 import {
-	CRYPTODEVS_DAO_ABI,
-	CRYPTODEVS_DAO_CONTRACT_ADDRESS,
-	CRYPTODEVS_NFT_ABI,
-	CRYPTODEVS_NFT_CONTRACT_ADDRESS,
-} from "../constants";
-import styles from "../styles/Home.module.css";
+	DAO_ABI,
+	DAO_CONTRACT_ADDRESS,
+	NFT_ABI,
+	NFT_CONTRACT_ADDRESS,
+} from "../constants/dao";
+import styles from "/styles/Home.module.css";
+import {JsonRpcSigner} from "@ethersproject/providers";
+import Link from "next/link";
+
+import {
+	Button,
+	Container,
+	Text,
+	Card,
+	Grid,
+	Input,
+	FormElement,
+	Modal,
+	useModal,
+} from "@nextui-org/react";
+
+
+type Proposal = {
+	proposalId: number,
+	nftTokenId: string,
+	deadline: Date,
+	yayVotes: string,
+	nayVotes: string,
+	executed: boolean,
+}
 
 export default function Home() {
 	const [treasuryBalance, setTreasuryBalance] = useState("0");
 	const [numProposals, setNumProposals] = useState("0");
-	const [proposals, setProposals] = useState([]);
+	const [proposals, setProposals] = useState<Proposal[]>([]);
 	const [nftBalance, setNftBalance] = useState(0);
 	// Fake NFT Token ID to purchase. Used when creating a proposal.
 	const [fakeNftTokenId, setFakeNftTokenId] = useState("");
@@ -24,7 +48,7 @@ export default function Home() {
 	const [loading, setLoading] = useState(false);
 	// True if user has connected their wallet, false otherwise
 	const [walletConnected, setWalletConnected] = useState(false);
-	const web3ModalRef = useRef();
+	const web3ModalRef = useRef<Web3Modal>(Web3Modal.prototype);
 
 	const connectWallet = async () => {
 		try {
@@ -40,7 +64,7 @@ export default function Home() {
 		try {
 			const provider = await getProviderOrSigner();
 			const balance = await provider.getBalance(
-				CRYPTODEVS_DAO_CONTRACT_ADDRESS
+				DAO_CONTRACT_ADDRESS
 			);
 			setTreasuryBalance(balance.toString());
 		} catch (error) {
@@ -65,7 +89,8 @@ export default function Home() {
 		try {
 			const signer = await getProviderOrSigner(true);
 			const nftContract = getCryptodevsNFTContractInstance(signer);
-			const balance = await nftContract.balanceOf(signer.getAddress());
+			const address = signer instanceof JsonRpcSigner && await signer.getAddress();
+			const balance = await nftContract.balanceOf(address);
 			setNftBalance(parseInt(balance.toString()));
 		} catch (error) {
 			console.error(error);
@@ -82,7 +107,7 @@ export default function Home() {
 			await txn.wait();
 			await getNumProposalsInDAO();
 			setLoading(false);
-		} catch (error) {
+		} catch (error: any) {
 			console.error(error);
 			window.alert(error.data.message);
 		}
@@ -96,7 +121,7 @@ export default function Home() {
 			const provider = await getProviderOrSigner();
 			const daoContract = getDaoContractInstance(provider);
 			const proposal = await daoContract.proposals(id);
-			const parsedProposal = {
+			const parsedProposal: Proposal = {
 				proposalId: id,
 				nftTokenId: proposal.nftTokenId.toString(),
 				deadline: new Date(parseInt(proposal.deadline.toString()) * 1000),
@@ -114,10 +139,10 @@ export default function Home() {
 	// and sets the `proposals` state variable
 	const fetchAllProposals = async () => {
 		try {
-			const proposals = [];
+			const proposals: Proposal[] = [];
 			for (let i = 0; i < Number(numProposals); i++) {
-				const proposal = await fetchProposalById(i);
-				proposals.push(proposal);
+				let proposal = await fetchProposalById(i);
+				typeof(proposal) == 'object' && proposals.push(proposal);
 			}
 			setProposals(proposals);
 			return proposals;
@@ -128,7 +153,7 @@ export default function Home() {
 
 	// Calls the `voteOnProposal` function in the contract, using the passed
 	// proposal ID and Vote
-	const voteOnProposal = async (proposalId, _vote) => {
+	const voteOnProposal = async (proposalId: number, _vote: string) => {
 		try {
 			const signer = await getProviderOrSigner(true);
 			const daoContract = getDaoContractInstance(signer);
@@ -167,35 +192,34 @@ export default function Home() {
 		const provider = await web3ModalRef.current.connect();
 		const web3Provider = new providers.Web3Provider(provider);
 
-		const { chainId } = await web3Provider.getNetwork();
-		if (chainId !== 4) {
-			window.alert("Please switch to the Rinkeby network!");
-			throw new Error("Please switch to the Rinkeby network");
-		}
+		// const { chainId } = await web3Provider.getNetwork();
+		// if (chainId !== 4) {
+		// 	window.alert("Please switch to the Rinkeby network!");
+		// 	throw new Error("Please switch to the Rinkeby network");
+		// }
 
 		if (needSigner) {
-			const signer = web3Provider.getSigner();
-			return signer;
+			return web3Provider.getSigner();
 		}
 		return web3Provider;
 	};
 
 	// Helper function to return a DAO Contract instance
 	// given a Provider/Signer
-	const getDaoContractInstance = (providerOrSigner) => {
+	const getDaoContractInstance = (providerOrSigner: any) => {
 		return new Contract(
-			CRYPTODEVS_DAO_CONTRACT_ADDRESS,
-			CRYPTODEVS_DAO_ABI,
+			DAO_CONTRACT_ADDRESS,
+			DAO_ABI,
 			providerOrSigner
 		);
 	};
 
 	// Helper function to return a CryptoDevs NFT Contract instance
 	// given a Provider/Signer
-	const getCryptodevsNFTContractInstance = (providerOrSigner) => {
+	const getCryptodevsNFTContractInstance = (providerOrSigner: any) => {
 		return new Contract(
-			CRYPTODEVS_NFT_CONTRACT_ADDRESS,
-			CRYPTODEVS_NFT_ABI,
+			NFT_CONTRACT_ADDRESS,
+			NFT_ABI,
 			providerOrSigner
 		);
 	};
@@ -214,9 +238,9 @@ export default function Home() {
 			});
 
 			connectWallet().then(() => {
-				getDAOTreasuryBalance();
-				getUserNFTBalance();
-				getNumProposalsInDAO();
+				void getDAOTreasuryBalance();
+				void getUserNFTBalance();
+				void getNumProposalsInDAO();
 			});
 		}
 	}, [walletConnected]);
@@ -226,7 +250,7 @@ export default function Home() {
 	// to the 'View Proposals' tab
 	useEffect(() => {
 		if (selectedTab === "View Proposals") {
-			fetchAllProposals();
+			void fetchAllProposals();
 		}
 	}, [selectedTab]);
 
@@ -337,41 +361,59 @@ export default function Home() {
 				<meta name="description" content="CryptoDevs DAO" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-
+			<Container xs>
+				<Button.Group size="xl"  color="default">
+					<Link href={'/'}><Button><Text color="white" >DAO</Text></Button></Link>
+					<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
+					<Link href={'/NFT'}><Button><Text color="black" >Mint NFTs</Text></Button></Link>
+					<Link href={'/whitelist'}><Button><Text color="black" >Start whitelist</Text></Button></Link>
+				</Button.Group>
+			</Container>
 			<div className={styles.main}>
 				<div>
-					<h1 className={styles.title}>Welcome to Crypto Devs!</h1>
-					<div className={styles.description}>Welcome to the DAO!</div>
+					<h1 className={styles.title}>Welcome to WestPunks DAO!</h1>
+					{/*<div className={styles.description}>Welcome to the DAO!</div>*/}
 					<div className={styles.description}>
-						Your CryptoDevs NFT Balance: {nftBalance}
+						Your WestPunks NFT Balance: {nftBalance}
 						<br />
 						Treasury Balance: {formatEther(treasuryBalance)} ETH
 						<br />
 						Total Number of Proposals: {numProposals}
 					</div>
 					<div className={styles.flex}>
-						<button
-							className={styles.button}
-							onClick={() => setSelectedTab("Create Proposal")}
-						>
-							Create Proposal
-						</button>
-						<button
-							className={styles.button}
-							onClick={() => setSelectedTab("View Proposals")}
-						>
-							View Proposals
-						</button>
+						<Button.Group size="xl"  color="success">
+							<Button onClick={() => setSelectedTab("Create Proposal")}>
+								<Text color="white" >Create Proposal</Text>
+							</Button>
+
+							<Button onClick={() => setSelectedTab("View Proposals")}>
+								<Text color="white" >View Proposals</Text>
+							</Button>
+						</Button.Group>
+
+
+						{/*<button*/}
+						{/*	className={styles.button}*/}
+						{/*	onClick={() => setSelectedTab("Create Proposal")}*/}
+						{/*>*/}
+						{/*	Create Proposal*/}
+						{/*</button>*/}
+						{/*<button*/}
+						{/*	className={styles.button}*/}
+						{/*	onClick={() => setSelectedTab("View Proposals")}*/}
+						{/*>*/}
+						{/*	View Proposals*/}
+						{/*</button>*/}
 					</div>
 					{renderTabs()}
 				</div>
 				<div>
-					<img className={styles.image} src="/cryptodevs/0.svg" />
+					<img className={styles.image} src="/crypto-devs.svg" />
 				</div>
 			</div>
 
 			<footer className={styles.footer}>
-				Made with &#10084; by Crypto Devs
+				Made with &#10084;
 			</footer>
 		</div>
 	);

@@ -10,7 +10,7 @@
 .footer {
     display: flex;
     padding: 2rem 0;
-    border-top: 1px solid #eaeaea;
+    /*border-top: 1px solid #eaeaea;*/
     justify-content: center;
     align-items: center;
 }
@@ -52,6 +52,36 @@
     cursor: pointer;
     margin-bottom: 2%;
 }
+
+.button2 {
+    border-radius: 4px;
+    background-color: indigo;
+    border: none;
+    color: #ffffff;
+    font-size: 15px;
+    padding: 10px;
+    cursor: pointer;
+    margin-right: 2%;
+    margin-top: 1rem;
+}
+
+.proposalCard {
+    width: fit-content;
+    margin-top: 0.25rem;
+    border: black 2px solid;
+    flex: 1;
+    flex-direction: column;
+}
+
+.flex {
+    flex: 1;
+    justify-content: space-between;
+}
+
+.container {
+    margin-top: 2rem;
+}
+
 @media (max-width: 1000px) {
     .main {
         width: 100%;
