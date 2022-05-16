@@ -114,6 +114,10 @@ export default function Home() {
 		}
 	};
 	useEffect(() => {
+		if(typeof window.ethereum == "undefined") {
+			alert("No wallet installed in the browser! You cant interact with the app")
+			return
+		} else
 		void connectWallet();
 
 	}, []);

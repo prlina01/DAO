@@ -231,17 +231,21 @@ export default function Home() {
 	// DAO Treasury Balance, User NFT Balance, and Number of Proposals in the DAO
 	useEffect(() => {
 		if (!walletConnected) {
+			if(typeof window.ethereum == "undefined") {
+				alert('No wallet installed in the browser! You cant interact with the app!')
+				return
+			} else
 			web3ModalRef.current = new Web3Modal({
 				network: "rinkeby",
 				providerOptions: {},
 				disableInjectedProvider: false,
 			});
 
-			connectWallet().then(() => {
+
 				void getDAOTreasuryBalance();
 				void getUserNFTBalance();
 				void getNumProposalsInDAO();
-			});
+
 		}
 	}, [walletConnected]);
 
