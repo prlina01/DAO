@@ -32,7 +32,7 @@ export default function Home() {
 			setLoading(true);
 			await tx.wait();
 			setLoading(false);
-			window.alert("You successfully minted a Crypto Dev!");
+			window.alert("You successfully minted a WestPunk!");
 		} catch (err) {
 			console.error(err);
 		}
@@ -53,7 +53,7 @@ export default function Home() {
 			// wait for the transaction to get mined
 			await tx.wait();
 			setLoading(false);
-			window.alert("You successfully minted a Crypto Dev!");
+			window.alert("You successfully minted a WestPunk!");
 		} catch (err) {
 			console.error(err);
 		}
@@ -285,7 +285,7 @@ export default function Home() {
 	return (
 		<div>
 			<Head>
-				<title>Crypto Devs</title>
+				<title>WestPunks NFTs</title>
 				<meta name="description" content="NFT" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>

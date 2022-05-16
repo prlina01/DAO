@@ -15,9 +15,9 @@ export default function Home() {
 	const [walletConnected, setWalletConnected] = useState(false);
 	const [loading, setLoading] = useState(false);
 	// tokensToBeClaimed keeps track of the number of tokens that can be claimed
-	// based on the Crypto Dev NFTs held by the user for which they haven't claimed the tokens
+	// based on the WestPunks NFTs held by the user for which they haven't claimed the tokens
 	const [tokensToBeClaimed, setTokensToBeClaimed] = useState(0);
-	// balanceOfCryptoDevTokens keeps track of number of Crypto Dev tokens owned by an address
+	// balanceOfCryptoDevTokens keeps track of number of WestPunks tokens owned by an address
 	const [balanceOfCryptoDevTokens, setBalanceOfCryptoDevTokens] = useState(
 		zero
 	);
@@ -72,7 +72,7 @@ export default function Home() {
 	};
 
 	/**
-	 * getBalanceOfCryptoDevTokens: checks the balance of Crypto Dev Tokens's held by an address
+	 * getBalanceOfCryptoDevTokens: checks the balance of WestPunks Tokens's held by an address
 	 */
 	const getBalanceOfCryptoDevTokens = async () => {
 		try {
@@ -106,7 +106,7 @@ export default function Home() {
 			// Each token is of `0.001 ether`. The value we need to send is `0.001 * amount`
 			const value = amount.mul(parseEther(0.001.toString()));
 			const tx = await tokenContract.mint(amount, {
-				// value signifies the cost of one crypto dev token which is "0.001" eth.
+				// value signifies the cost of one WestPunks token which is "0.001" eth.
 				// We are parsing `0.001` string to ether using the utils library from ethers.js
 				value: value
 			});
@@ -114,7 +114,7 @@ export default function Home() {
 
 			await tx.wait();
 			setLoading(false);
-			window.alert("Successfully minted Crypto Dev Tokens");
+			window.alert("Successfully minted WestPunks Tokens");
 			await getBalanceOfCryptoDevTokens();
 			await getTotalTokensMinted();
 			await getTokensToBeClaimed();
@@ -122,7 +122,7 @@ export default function Home() {
 	};
 
 	/**
-	 * claimCryptoDevTokens: Helps the user claim Crypto Dev Tokens
+	 * claimCryptoDevTokens: Helps the user claim WestPunks Tokens
 	 */
 	const claimCryptoDevTokens = async () => {
 
@@ -136,7 +136,7 @@ export default function Home() {
 			setLoading(true);
 			await tx.wait();
 			setLoading(false);
-			window.alert("Successfully claimed Crypto Dev Tokens");
+			window.alert("Successfully claimed WestPunks Tokens");
 			await getBalanceOfCryptoDevTokens();
 			await getTotalTokensMinted();
 			await getTokensToBeClaimed();
@@ -264,7 +264,7 @@ export default function Home() {
 	return (
 		<div>
 			<Head>
-				<title>Crypto Devs</title>
+				<title>ICO</title>
 				<meta name="description" content="ICO-Dapp" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>

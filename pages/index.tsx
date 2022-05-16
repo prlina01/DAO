@@ -84,7 +84,7 @@ export default function Home() {
 		}
 	};
 
-	// Reads the balance of the user's CryptoDevs NFTs and sets the `nftBalance` state variable
+	// Reads the balance of the user's WestPunks NFTs and sets the `nftBalance` state variable
 	const getUserNFTBalance = async () => {
 		try {
 			const signer = await getProviderOrSigner(true);
@@ -214,7 +214,7 @@ export default function Home() {
 		);
 	};
 
-	// Helper function to return a CryptoDevs NFT Contract instance
+	// Helper function to return a WestPunks NFT Contract instance
 	// given a Provider/Signer
 	const getCryptodevsNFTContractInstance = (providerOrSigner: any) => {
 		return new Contract(
@@ -361,8 +361,8 @@ export default function Home() {
 	return (
 		<div>
 			<Head>
-				<title>CryptoDevs DAO</title>
-				<meta name="description" content="CryptoDevs DAO" />
+				<title>WestPunks DAO</title>
+				<meta name="description" content="WestPunks DAO" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<Container xs>
