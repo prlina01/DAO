@@ -1,10 +1,12 @@
-.main {
-    min-height: 90vh;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    font-family: "Courier New", Courier, monospace;
+@media (min-width: 1000px) {
+    .main {
+        min-height: 90vh;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        font-family: "Courier New", Courier, monospace;
+    }
 }
 
 .footer {
@@ -84,6 +86,7 @@
 
 @media (max-width: 1000px) {
     .main {
+        margin-left: 50px;
         width: 100%;
         flex-direction: column;
         justify-content: center;
