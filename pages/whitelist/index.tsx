@@ -5,7 +5,7 @@ import {ethers} from "ethers";
 import {useEffect, useState} from "react";
 import {WHITELIST_CONTRACT_ADDRESS} from "../../constants/whitelist";
 import Whitelist from '../../artifacts/contracts/Whitelist/Whitelist.sol/Whitelist.json'
-import {Button, Container, Text} from "@nextui-org/react";
+import {Button, Card, Col, Container, Row, Spacer, Text} from "@nextui-org/react";
 import Link from "next/link";
 
 
@@ -129,33 +129,46 @@ export default function Home() {
 				<meta name="description" content="Whitelist-Dapp" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<Container xs>
-				<Button.Group size="xl"  color="default">
-					<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
-					<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
-					<Link href={'/NFT'}><Button><Text color="black" >Mint NFTs</Text></Button></Link>
-					<Link href={'/whitelist'}><Button><Text color="white" >Start whitelist</Text></Button></Link>
-				</Button.Group>
-			</Container>
-			<div className={styles.main}>
-				<div>
-					<h1 className={styles.title}>Welcome to WestPunks whitelist!</h1>
-					<div className={styles.description}>
-						Its an NFT collection for developers in Crypto.
+			<Container md>
+				<Row justify="center" align="center">
+					<div className={styles.hideOnDekstop}>
+						<Button.Group  auto color="default">
+							<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
+							<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
+							<Link href={'/NFT'}><Button><Text color="black" >Mint NFTs</Text></Button></Link>
+							<Link href={'/whitelist'}><Button><Text color="white" >Start whitelist</Text></Button></Link>
+						</Button.Group>
 					</div>
-					<div className={styles.description}>
-						{numberOfWhitelisted} have already joined the Whitelist
+					<div className={styles.hideOnMobile}>
+						<Button.Group  size={"xl"} color="default">
+							<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
+							<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
+							<Link href={'/NFT'}><Button><Text color="black" >Mint NFTs</Text></Button></Link>
+							<Link href={'/whitelist'}><Button><Text color="white" >Start whitelist</Text></Button></Link>
+						</Button.Group>
 					</div>
-					{renderButton()}
-				</div>
-				<div>
-					<img className={styles.image} src="/nfts/1.svg"  alt="img"/>
-				</div>
-			</div>
+				</Row>
+				<Spacer y={2} />
+				<Row>
+					<Card css={{bgColor: "#079992"}}>
+						<Col>
+							<h1 className={styles.title}>Welcome to WestPunks whitelist!</h1>
+							<div className={styles.description}>
+								Its an NFT collection for developers in Crypto.
+							</div>
+							<div className={styles.description}>
+								{numberOfWhitelisted} have already joined the Whitelist
+							</div>
+							{renderButton()}
+						</Col>
+						<Col className={styles.hideOnMobile}>
+							<img src="/nfts/1.svg"  alt="img"/>
+						</Col>
+					</Card>
+				</Row>
 
-			<footer className={styles.footer}>
-				Made with &#10084;
-			</footer>
+			</Container>
+
 		</div>
 	);
 }
