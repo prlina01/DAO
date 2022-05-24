@@ -290,12 +290,22 @@ export default function Home() {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<Container xs>
-				<Button.Group size="xl"  color="default">
+				<div className={styles.hideOnMobile}>
+					<Button.Group size="xl"  color="default">
 					<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
 					<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
 					<Link href={'/NFT'}><Button><Text color="white" >Mint NFTs</Text></Button></Link>
 					<Link href={'/whitelist'}><Button><Text color="black" >Start whitelist</Text></Button></Link>
 				</Button.Group>
+				</div>
+				<div className={styles.hideOnMobile}>
+					<Button.Group  size={"xl"} color="default">
+						<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
+						<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
+						<Link href={'/NFT'}><Button><Text color="black" >Mint NFTs</Text></Button></Link>
+						<Link href={'/whitelist'}><Button><Text color="white" >Start whitelist</Text></Button></Link>
+					</Button.Group>
+				</div>
 			</Container>
 		<div className={styles.main}>
 			<div>
@@ -309,7 +319,7 @@ export default function Home() {
 				{renderButton()}
 			</div>
 			<div>
-				<img className={styles.image} src="/nfts/0.svg" />
+				<img className={styles.hideOnMobile} src="/nfts/0.svg" />
 			</div>
 		</div>
 

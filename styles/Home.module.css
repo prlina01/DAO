@@ -7,6 +7,10 @@
         align-items: center;
         font-family: "Courier New", Courier, monospace;
     }
+
+    .hideOnDesktop{
+        display: none;
+    }
 }
 
 .footer {
@@ -91,5 +95,11 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+    }
+}
+
+@media (max-width: 600px) {
+    .hideOnMobile {
+        display: none;
     }
 }
