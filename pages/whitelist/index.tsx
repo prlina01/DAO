@@ -2,10 +2,10 @@ import Head from "next/head";
 import styles from "../../styles/Home.module.css";
 import Web3Modal from "web3modal";
 import {ethers} from "ethers";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {WHITELIST_CONTRACT_ADDRESS} from "../../constants/whitelist";
 import Whitelist from '../../artifacts/contracts/Whitelist/Whitelist.sol/Whitelist.json'
-import {Button, Card, Col, Container, Row, Spacer, Text} from "@nextui-org/react";
+import {Button, Card, Col, Container, Grid, Row, Spacer, Text} from "@nextui-org/react";
 import Link from "next/link";
 
 
@@ -19,6 +19,7 @@ export default function Home() {
 	// numberOfWhitelisted tracks the number of address's whitelisted
 	const [numberOfWhitelisted, setNumberOfWhitelisted] = useState(0);
 
+	const isMetamaskRef = useRef(true)
 
 	const addAddressToWhitelist = async () => {
 		try {
@@ -89,33 +90,36 @@ export default function Home() {
 
 
 	const renderButton = () => {
+		if(!isMetamaskRef.current) return <Button css={{mt: '10vh'}} disabled={true}>No wallet installed in your browser!</Button>
 		if (walletConnected) {
 			if (joinedWhitelist) {
 				return (
-					<div className={styles.description}>
+					<Text css={{mt: '10vh'}} size={30}>
 						Thanks for joining the Whitelist!
-					</div>
+					</Text>
 				);
 			} else if (loading) {
-				return <button className={styles.button}>Loading...</button>;
+				return <Button css={{mt: '10vh'}} color={'success'}>Loading...</Button>;
 			} else {
 				return (
-					<button onClick={addAddressToWhitelist} className={styles.button}>
+					<Button css={{mt: '10vh'}} color={'success'} onClick={addAddressToWhitelist} >
 						Join the Whitelist
-					</button>
+					</Button>
 				);
 			}
 		} else {
 			return (
-				<button onClick={connectWallet} className={styles.button}>
+				<Button css={{mt: '10vh'}} onClick={connectWallet} color={'success'}>
 					Connect your wallet
-				</button>
+				</Button>
 			);
 		}
 	};
 	useEffect(() => {
 		if(typeof window.ethereum == "undefined") {
 			alert("No wallet installed in the browser! You cant interact with the app")
+			isMetamaskRef.current = false
+			void getNumberOfWhitelisted()
 			return
 		} else
 		void connectWallet();
@@ -131,7 +135,7 @@ export default function Home() {
 			</Head>
 			<Container md>
 				<Row justify="center" align="center">
-					<div className={styles.hideOnDekstop}>
+					<div className={styles.hideOnDesktop}>
 						<Button.Group  auto color="default">
 							<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
 							<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
@@ -149,23 +153,33 @@ export default function Home() {
 					</div>
 				</Row>
 				<Spacer y={2} />
-				<Row>
-					<Card css={{bgColor: "#079992"}}>
-						<Col>
-							<h1 className={styles.title}>Welcome to WestPunks whitelist!</h1>
-							<div className={styles.description}>
+				<Card css={{bgColor: "#079992"}}>
+					<Grid.Container gap={2} justify="center">
+						<Grid>
+							<Text h1
+								  size={55}
+								  css={{
+									  textGradient: "45deg, $blue600 -20%, $purple600 50%",
+									  mb: '1vh',
+									  textAlign: 'center'
+								  }}
+								  weight="bold">
+								WestPunks whitelist</Text>
+							<Text  h3 size={25} css={{mb: '10vh'}}>
 								Its an NFT collection for developers in Crypto.
-							</div>
-							<div className={styles.description}>
-								{numberOfWhitelisted} have already joined the Whitelist
-							</div>
+							</Text>
+							<Text h3 size={25}>
+								<b>{numberOfWhitelisted}</b>
+								{numberOfWhitelisted > 2 || numberOfWhitelisted == 0 ? ' people have ' : ' person has ' }
+								already joined the Whitelist
+							</Text>
 							{renderButton()}
-						</Col>
-						<Col className={styles.hideOnMobile}>
+						</Grid>
+						<Grid className={styles.hideOnMobile}>
 							<img src="/nfts/1.svg"  alt="img"/>
-						</Col>
-					</Card>
-				</Row>
+						</Grid>
+					</Grid.Container>
+				</Card>
 
 			</Container>
 

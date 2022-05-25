@@ -6,7 +6,7 @@ import {NFT_CONTRACT_ADDRESS, ABI } from "../../constants/nft";
 
 import styles from "/styles/Home.module.css";
 import {JsonRpcSigner} from "@ethersproject/providers";
-import {Button, Container, Text} from "@nextui-org/react";
+import {Button, Card, Container, Grid, Row, Spacer, Text} from "@nextui-org/react";
 import Link from "next/link";
 
 export default function Home() {
@@ -17,6 +17,7 @@ export default function Home() {
 	const [isOwner, setIsOwner] = useState(false);
 	const [tokenIdsMinted, setTokenIdsMinted] = useState("0");
 	const web3ModalRef = useRef<Web3Modal>(Web3Modal.prototype);
+	const isMetamaskRef = useRef(true)
 
 	/**
 	 * presaleMint: Mint an NFT during the presale
@@ -146,9 +147,6 @@ export default function Home() {
 			if (typeof address == "string" && address.toLowerCase() === _owner.toLowerCase()) {
 				setIsOwner(true);
 			}
-
-
-
 	};
 
 	/**
@@ -194,13 +192,14 @@ export default function Home() {
 		if (!walletConnected) {
 			if(typeof window.ethereum == "undefined") {
 				alert('No wallet installed in the browser! You cant interact with the app')
+				isMetamaskRef.current = false
 				return
 			} else
 			web3ModalRef.current = new Web3Modal({
 				network: "mumbai",
 				providerOptions: {},
 				disableInjectedProvider: false,
-			});
+			})
 			void connectWallet();
 
 			// Check if presale has started and ended
@@ -228,33 +227,31 @@ export default function Home() {
 	}, [walletConnected]);
 
 	const renderButton = () => {
+		if(!isMetamaskRef.current) return <Button css={{mt: '10vh'}} disabled={true}>No wallet installed in your browser!</Button>
 		if (!walletConnected) {
 			return (
-				<button onClick={connectWallet} className={styles.button}>
-				Connect your wallet
-			</button>
+				<Button css={{mt: '10vh'}} color={'success'} onClick={connectWallet} >
+					Connect your wallet
+				</Button>
 		)}
 
 		// If we are currently waiting for something, return a loading button
 		if (loading) {
-			return <button className={styles.button}>Loading...</button>;
+			return <Button css={{mt: '10vh'}} color={'success'}>Loading...</Button>;
 		}
 
 		// If connected user is the owner, and presale hasnt started yet, allow them to start the presale
 		if (isOwner && !presaleStarted) {
 			return (
-				<button className={styles.button} onClick={startPresale}>
-				Start Presale!
-			</button>
-		);
-		}
+				<Button css={{mt: '10vh'}} color={'success'} onClick={startPresale}>
+					Start Presale!
+				</Button>
+			)}
 
 		// If connected user is not the owner but presale hasn't started yet, tell them that
 		if (!presaleStarted) {
 			return (
-				<div>
-					<div className={styles.description}>Presale hasn't started!</div>
-				</div>
+				<Text css={{mt: '10vh'}} size={30}>Presale hasn't started!</Text>
 			);
 		}
 
@@ -262,22 +259,22 @@ export default function Home() {
 		if (presaleStarted && !presaleEnded) {
 			return (
 				<div>
-					<div className={styles.description}>
+					<Text css={{mt: '10vh'}} size={30}>
 						Presale has started!!! If your address is whitelisted, Mint a Crypto
 						Dev 🥳
-          			</div>
-		  			<button className={styles.button} onClick={presaleMint}>
+          			</Text>
+		  			<Button css={{mt: '10vh'}} color={'success'} onClick={presaleMint}>
 						Presale Mint 🚀
-          			</button>
+          			</Button>
 		  		</div>
 				)}
 
 		// If presale started and has ended, its time for public minting
 		if (presaleStarted && presaleEnded) {
 			return (
-				<button className={styles.button} onClick={publicMint}>
-				Public Mint 🚀
-        </button>
+				<Button css={{mt: '10vh'}} color={'success'} onClick={publicMint}>
+					Public Mint 🚀
+        		</Button>
 		);
 		}
 	};
@@ -289,43 +286,52 @@ export default function Home() {
 				<meta name="description" content="NFT" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<Container xs>
-				<div className={styles.hideOnMobile}>
-					<Button.Group size="xl"  color="default">
-					<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
-					<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
-					<Link href={'/NFT'}><Button><Text color="white" >Mint NFTs</Text></Button></Link>
-					<Link href={'/whitelist'}><Button><Text color="black" >Start whitelist</Text></Button></Link>
-				</Button.Group>
-				</div>
-				<div className={styles.hideOnMobile}>
-					<Button.Group  size={"xl"} color="default">
-						<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
-						<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
-						<Link href={'/NFT'}><Button><Text color="black" >Mint NFTs</Text></Button></Link>
-						<Link href={'/whitelist'}><Button><Text color="white" >Start whitelist</Text></Button></Link>
-					</Button.Group>
-				</div>
-			</Container>
-		<div className={styles.main}>
-			<div>
-				<h1 className={styles.title}>Welcome to WestPunks NFT minting!</h1>
-				<div className={styles.description}>
-					Its an NFT collection for developers in Crypto.
-				</div>
-				<div className={styles.description}>
-					{tokenIdsMinted}/20 have been minted
-				</div>
-				{renderButton()}
-			</div>
-			<div>
-				<img className={styles.hideOnMobile} src="/nfts/0.svg" />
-			</div>
-		</div>
-
-		<footer className={styles.footer}>
-			Made with &#10084;
-		</footer>
+			<Container md>
+				<Row justify="center" align="center">
+					<div className={styles.hideOnDesktop}>
+						<Button.Group  auto color="default">
+							<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
+							<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
+							<Link href={'/NFT'}><Button><Text color="white" >Mint NFTs</Text></Button></Link>
+							<Link href={'/whitelist'}><Button><Text color="black" >Start whitelist</Text></Button></Link>
+						</Button.Group>
+					</div>
+					<div className={styles.hideOnMobile}>
+						<Button.Group  size={"xl"} color="default">
+							<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
+							<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
+							<Link href={'/NFT'}><Button><Text color="white" >Mint NFTs</Text></Button></Link>
+							<Link href={'/whitelist'}><Button><Text color="black" >Start whitelist</Text></Button></Link>
+						</Button.Group>
+					</div>
+				</Row>
+				<Spacer y={2} />
+				<Card css={{bgColor: "#079992"}}>
+					<Grid.Container gap={2} justify="center">
+						<Grid>
+							<Text h1
+								  size={55}
+								  css={{
+									  textGradient: "45deg, $blue600 -20%, $purple600 50%",
+									  mb: '1vh',
+									  textAlign: 'center'
+								  }}
+								  weight="bold">
+								WestPunks NFT minting</Text>
+							<Text  h3 size={25} css={{mb: '10vh'}}>
+								Its an NFT collection for developers in Crypto.
+							</Text>
+							<Text h3 size={25}>
+								{tokenIdsMinted}/20 have been minted
+							</Text>
+							{renderButton()}
+						</Grid>
+						<Grid className={styles.hideOnMobile}>
+							<img src="/nfts/0.svg"  alt="img"/>
+						</Grid>
+					</Grid.Container>
+				</Card>
+		</Container>
 	</div>
 );
 }

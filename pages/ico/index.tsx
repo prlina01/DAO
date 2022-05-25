@@ -6,7 +6,7 @@ import {NFT_CONTRACT_ABI, NFT_CONTRACT_ADDRESS, TOKEN_CONTRACT_ABI, TOKEN_CONTRA
 import styles from "/styles/Home.module.css";
 import {JsonRpcSigner} from "@ethersproject/providers";
 import {parseEther} from "ethers/lib/utils";
-import {Button, Container, Text} from "@nextui-org/react";
+import {Button, Card, Container, Grid, Input, Row, Spacer, Text} from "@nextui-org/react";
 import Link from "next/link";
 
 export default function Home() {
@@ -26,6 +26,8 @@ export default function Home() {
 	// tokensMinted is the total number of tokens that have been minted till now out of 10000(max total supply)
 	const [tokensMinted, setTokensMinted] = useState(zero);
 	const web3ModalRef = useRef<Web3Modal>(Web3Modal.prototype);
+	const isMetamaskRef = useRef(true)
+
 
 	/**
 	 * getTokensToBeClaimed: checks the balance of tokens that can be claimed by the user
@@ -214,49 +216,54 @@ export default function Home() {
 	  renderButton: Returns a button based on the state of the dapp
 	*/
 	const renderButton = () => {
+		if(!isMetamaskRef.current)
+			return <Button css={{mt: '10vh'}} disabled={true}>No wallet installed in your browser!</Button>
+
 		// If we are currently waiting for something, return a loading button
 		if (loading) {
 			return (
 				<div>
-					<button className={styles.button}>Loading...</button>
+					<Button css={{mt: '10vh'}} color={'success'}>Loading...</Button>
 				</div>
 			)}
 		// If tokens to be claimed are greater than 0, Return a claim button
 		if (tokensToBeClaimed > 0) {
 			return (
 				<div>
-					<div className={styles.description}>
-					{tokensToBeClaimed * 10} Tokens can be claimed!
-			</div>
-			<button className={styles.button} onClick={claimCryptoDevTokens}>
-				Claim Tokens
-			</button>
-			</div>
-		);
-		}
+					<Text css={{mt: '10vh'}} size={30}>
+						{tokensToBeClaimed * 10} Tokens can be claimed!
+					</Text>
+					<Button css={{mt: '10vh'}} color={'success'} onClick={claimCryptoDevTokens}>
+						Claim Tokens
+					</Button>
+				</div>
+		)}
 		// If user doesn't have any tokens to claim, show the mint button
 		return (
-			<div style={{ display: "flex-col" }}>
-				<div>
-					<input
-						type="number"
-						placeholder="Amount of Tokens"
-						// BigNumber.from converts the `e.target.value` to a BigNumber
-						onChange={(e) => {
-							if(e.target.value) setTokenAmount(BigNumber.from(e.target.value))
-						}}
-						className={styles.input}
-					/>
-				</div>
+			<div>
+				<Grid.Container>
+					<Grid xs={12} justify='center'>
+						<Input
+							type="number"
+							placeholder="Amount of Tokens"
+							// BigNumber.from converts the `e.target.value` to a BigNumber
+							onChange={(e) => {
+								if(e.target.value) setTokenAmount(BigNumber.from(e.target.value))
+							}}
+						/>
+					</Grid>
+					<Grid xs={12} justify='center'>
+						<Button auto css={{mt: '2vh'}} color={'success'}
+								disabled={!(tokenAmount.gt(zero))}
+							// disabled={!(tokenAmount > 0)}
+								onClick={() => mintCryptoDevToken(tokenAmount)}
+						>
+							Mint Tokens
+						</Button>
+					</Grid>
 
-				<button
-					className={styles.button}
-					disabled={!(tokenAmount.gt(zero))}
-					// disabled={!(tokenAmount > 0)}
-					onClick={() => mintCryptoDevToken(tokenAmount)}
-				>
-				Mint Tokens
-				</button>
+				</Grid.Container>
+
 			</div>
 		);
 	};
@@ -268,47 +275,67 @@ export default function Home() {
 				<meta name="description" content="ICO-Dapp" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<Container xs>
-				<Button.Group size="xl"  color="default">
-					<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
-					<Link href={'/ico'}><Button><Text color="white" >ICO</Text></Button></Link>
-					<Link href={'/NFT'}><Button><Text color="black" >Mint NFTs</Text></Button></Link>
-					<Link href={'/whitelist'}><Button><Text color="black" >Start whitelist</Text></Button></Link>
-				</Button.Group>
+			<Container md>
+				<Row justify="center" align="center">
+					<div className={styles.hideOnDesktop}>
+						<Button.Group  auto color="default">
+							<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
+							<Link href={'/ico'}><Button><Text color="white" >ICO</Text></Button></Link>
+							<Link href={'/NFT'}><Button><Text color="black" >Mint NFTs</Text></Button></Link>
+							<Link href={'/whitelist'}><Button><Text color="black" >Start whitelist</Text></Button></Link>
+						</Button.Group>
+					</div>
+					<div className={styles.hideOnMobile}>
+						<Button.Group  size={"xl"} color="default">
+							<Link href={'/'}><Button><Text color="black" >DAO</Text></Button></Link>
+							<Link href={'/ico'}><Button><Text color="white" >ICO</Text></Button></Link>
+							<Link href={'/NFT'}><Button><Text color="black" >Mint NFTs</Text></Button></Link>
+							<Link href={'/whitelist'}><Button><Text color="black" >Start whitelist</Text></Button></Link>
+						</Button.Group>
+					</div>
+				</Row>
+				<Spacer y={2} />
+				<Card css={{bgColor: "#079992"}}>
+					<Grid.Container gap={2} justify="center">
+						<Grid>
+							<Text h1
+								  size={55}
+								  css={{
+									  textGradient: "45deg, $blue600 -20%, $purple600 50%",
+									  mb: '1vh',
+									  textAlign: 'center'
+								  }}
+								  weight="bold">
+								WestPunks ICO</Text>
+							<Text  h3 size={25} css={{mb: '10vh'}}>
+								You can claim or mint WestPunks tokens here.
+							</Text>
+							{walletConnected ? (
+								<div>
+									<Text color={"white"} h3 size={25} css={{mb: '2vh'}}>
+										{/* Format Ether helps us in converting a BigNumber to string */}
+										You have minted {utils.formatEther(balanceOfCryptoDevTokens)}{" "}
+										WestPunks Tokens
+									</Text>
+									<Text color={"white"} h3 size={25} css={{mb: '10vh'}}>
+										{/* Format Ether helps us in converting a BigNumber to string */}
+										Overall {utils.formatEther(tokensMinted)}/10000 have been
+										minted!!!
+									</Text>
+									{renderButton()}
+								</div>
+							) : (
+								<Button css={{mt: '10vh'}} color={'success'} onClick={connectWallet}>
+									Connect your wallet
+								</Button>
+							)}
+						</Grid>
+						<Grid className={styles.hideOnMobile}>
+							<img src="/nfts/4.svg"  alt="img"/>
+						</Grid>
+					</Grid.Container>
+				</Card>
 			</Container>
-			<div className={styles.main}>
-				<div>
-					<h1 className={styles.title}>Welcome to WestPunks ICO!</h1>
-					<div className={styles.description}>
-						You can claim or mint WestPunks tokens here
-					</div>
-				{walletConnected ? (
-					<div>
-						<div className={styles.description}>
-							{/* Format Ether helps us in converting a BigNumber to string */}
-							You have minted {utils.formatEther(balanceOfCryptoDevTokens)}{" "}
-							WestPunks Tokens
-						</div>
-						<div className={styles.description}>
-							{/* Format Ether helps us in converting a BigNumber to string */}
-							Overall {utils.formatEther(tokensMinted)}/10000 have been
-							minted!!!
-						</div>
-						{renderButton()}
-					</div>
-				) : (
-					<button onClick={connectWallet} className={styles.button}>
-						Connect your wallet
-					</button>
-				)}
-				</div>
-				<div>
-					<img className={styles.image} src="/nfts/3.svg" />
-				</div>
-			</div>
-			<footer className={styles.footer}>
-				Made with &#10084;
-			</footer>
 		</div>
 	);
 }
