@@ -8,7 +8,7 @@
 
 
 
-![Screenshot from 2022-05-16 21-46-41](https://user-images.githubusercontent.com/36077702/168670542-0d635359-7233-42a0-ac24-5eb1e11fcf09.png)
+![Screenshot from 2022-05-26 12-34-40](https://user-images.githubusercontent.com/36077702/170471377-266479cd-77cf-471f-acd2-b8f850795914.png)
 
 ### You can access the application here: https://westpunks.vercel.app/
 *To interact with the app you will need a wallet connected to the **mumbai** testnet.

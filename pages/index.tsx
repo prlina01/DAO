@@ -1,7 +1,7 @@
 import { Contract, providers } from "ethers";
 import { formatEther } from "ethers/lib/utils";
 import Head from "next/head";
-import { useEffect, useRef, useState } from "react";
+import React, {ChangeEvent, useEffect, useRef, useState } from "react";
 import Web3Modal from "web3modal";
 import {
 	DAO_ABI,
@@ -22,8 +22,9 @@ import {
 	Input,
 	FormElement,
 	Modal,
-	useModal,
+	useModal, Row, Spacer,
 } from "@nextui-org/react";
+import {useForm} from "react-hook-form";
 
 
 type Proposal = {
@@ -49,6 +50,9 @@ export default function Home() {
 	// True if user has connected their wallet, false otherwise
 	const [walletConnected, setWalletConnected] = useState(false);
 	const web3ModalRef = useRef<Web3Modal>(Web3Modal.prototype);
+	const isMetamaskRef = useRef(true)
+	const {register, setValue} = useForm()
+
 
 	const connectWallet = async () => {
 		try {
@@ -217,11 +221,7 @@ export default function Home() {
 	// Helper function to return a WestPunks NFT Contract instance
 	// given a Provider/Signer
 	const getCryptodevsNFTContractInstance = (providerOrSigner: any) => {
-		return new Contract(
-			NFT_CONTRACT_ADDRESS,
-			NFT_ABI,
-			providerOrSigner
-		);
+		return new Contract(NFT_CONTRACT_ADDRESS, NFT_ABI, providerOrSigner);
 	};
 
 	// piece of code that runs everytime the value of `walletConnected` changes
@@ -268,6 +268,16 @@ export default function Home() {
 		return null;
 	}
 
+	const checkInputHandler = (e: ChangeEvent<FormElement>) => {
+		const value = e.target.value
+		const isValid = value.match(/^[1-9]\d*$/)
+		if(!isValid || value.length > 8) setValue('ethAmount', value.substring(0,value.length - 1))
+		else {
+			setFakeNftTokenId(e.target.value)
+			setValue('ethAmount', value)
+		}
+	}
+
 	// Renders the 'Create Proposal' tab content
 	function renderCreateProposalTab() {
 		if (loading) {
@@ -286,13 +296,15 @@ export default function Home() {
 		} else {
 			return (
 				<div className={styles.container}>
-					<label>Fake NFT Token ID to Purchase: </label>
-					<input
-						placeholder="0"
-						type="number"
-						onChange={(e) => setFakeNftTokenId(e.target.value)}
+					{/*<label>Fake NFT Token ID to Purchase: </label>*/}
+					<Input
+						{...register('ethAmount')}
+						rounded
+						labelPlaceholder={'Enter NFT ID to Purchase'}
+						status={'secondary'}
+						onChange={(e) => checkInputHandler(e)}
 					/>
-					<button className={styles.button2} onClick={createProposal}>
+					<button className={styles.button2} style={{marginLeft: '20px'}} onClick={createProposal}>
 						Create
 					</button>
 				</div>
@@ -302,30 +314,31 @@ export default function Home() {
 
 	// Renders the 'View Proposals' tab content
 	function renderViewProposalsTab() {
+		if(!isMetamaskRef.current) return <Button css={{mt: '10vh'}} disabled={true}>No wallet installed in your browser!</Button>
 		if (loading) {
 			return (
-				<div className={styles.description}>
+				<Text css={{mt: '10vh'}} size={30}>
 					Loading... Waiting for transaction...
-				</div>
+				</Text>
 			);
 		} else if (proposals.length === 0) {
 			return (
-				<div className={styles.description}>No proposals have been created</div>
+				<Text css={{mt: '3vh'}} size={25}>No proposals have been created</Text>
 			);
 		} else {
 			return (
 				<div>
 					{proposals.map((p, index) => (
 						<div key={index} className={styles.proposalCard}>
-							<p>Proposal ID: {p.proposalId}</p>
-							<p>Fake NFT to Purchase: {p.nftTokenId}</p>
-							<p>Deadline: {p.deadline.toLocaleString()}</p>
-							<p>Yay Votes: {p.yayVotes}</p>
-							<p>Nay Votes: {p.nayVotes}</p>
-							<p>Executed?: {p.executed.toString()}</p>
+							<Text color={'white'} css={{textAlign: 'center'}}>Proposal ID: {p.proposalId}</Text>
+							<Text color={'white'} css={{textAlign: 'center'}}>Fake NFT to Purchase: {p.nftTokenId}</Text>
+							<Text color={'white'} css={{textAlign: 'center'}}>Deadline: {p.deadline.toLocaleString()}</Text>
+							<Text color={'white'} css={{textAlign: 'center'}}>Yay Votes: {p.yayVotes}</Text>
+							<Text color={'white'} css={{textAlign: 'center'}}>Nay Votes: {p.nayVotes}</Text>
+							<Text color={'white'} css={{textAlign: 'center'}}>Executed?: {p.executed.toString()}</Text>
 							{p.deadline.getTime() > Date.now() && !p.executed ? (
 								<div className={styles.flex}>
-									<button
+									<button style={{marginLeft: '35px'}}
 										className={styles.button2}
 										onClick={() => voteOnProposal(p.proposalId, "YAY")}
 									>
@@ -340,7 +353,7 @@ export default function Home() {
 								</div>
 							) : p.deadline.getTime() < Date.now() && !p.executed ? (
 								<div className={styles.flex}>
-									<button
+									<button style={{marginLeft: '35px'}}
 										className={styles.button2}
 										onClick={() => executeProposal(p.proposalId)}
 									>
@@ -349,7 +362,7 @@ export default function Home() {
 									</button>
 								</div>
 							) : (
-								<div className={styles.description}>Proposal Executed</div>
+								<Text weight={'bold'} css={{textAlign: 'center'}} color={'black'}>Proposal Executed</Text>
 							)}
 						</div>
 					))}
@@ -365,60 +378,93 @@ export default function Home() {
 				<meta name="description" content="WestPunks DAO" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<Container xs>
-				<Button.Group size="xl"  color="default">
-					<Link href={'/'}><Button><Text color="white" >DAO</Text></Button></Link>
-					<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
-					<Link href={'/NFT'}><Button><Text color="black" >Mint NFTs</Text></Button></Link>
-					<Link href={'/whitelist'}><Button><Text color="black" >Start whitelist</Text></Button></Link>
-				</Button.Group>
-			</Container>
-			<div className={styles.main}>
-				<div>
-					<h1 className={styles.title}>Welcome to WestPunks DAO!</h1>
-					{/*<div className={styles.description}>Welcome to the DAO!</div>*/}
-					<div className={styles.description}>
-						Your WestPunks NFT Balance: {nftBalance}
-						<br />
-						Treasury Balance: {formatEther(treasuryBalance)} ETH
-						<br />
-						Total Number of Proposals: {numProposals}
-					</div>
-					<div className={styles.flex}>
-						<Button.Group size="xl"  color="success">
-							<Button onClick={() => setSelectedTab("Create Proposal")}>
-								<Text color="white" >Create Proposal</Text>
-							</Button>
-
-							<Button onClick={() => setSelectedTab("View Proposals")}>
-								<Text color="white" >View Proposals</Text>
-							</Button>
+			<Container md>
+				<Row justify="center" align="center">
+					<div className={styles.hideOnDesktop}>
+						<Button.Group  auto color="default">
+							<Link href={'/'}><Button><Text color="white" >DAO</Text></Button></Link>
+							<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
+							<Link href={'/NFT'}><Button><Text color="black" >Mint NFTs</Text></Button></Link>
+							<Link href={'/whitelist'}><Button><Text color="black" >Start whitelist</Text></Button></Link>
 						</Button.Group>
-
-
-						{/*<button*/}
-						{/*	className={styles.button}*/}
-						{/*	onClick={() => setSelectedTab("Create Proposal")}*/}
-						{/*>*/}
-						{/*	Create Proposal*/}
-						{/*</button>*/}
-						{/*<button*/}
-						{/*	className={styles.button}*/}
-						{/*	onClick={() => setSelectedTab("View Proposals")}*/}
-						{/*>*/}
-						{/*	View Proposals*/}
-						{/*</button>*/}
 					</div>
-					{renderTabs()}
-				</div>
-				<div>
-					<img className={styles.image} src="/crypto-devs.svg" />
-				</div>
-			</div>
+					<div className={styles.hideOnMobile}>
+						<Button.Group size={"xl"} color="default">
+							<Link href={'/'}><Button><Text color="white" >DAO</Text></Button></Link>
+							<Link href={'/ico'}><Button><Text color="black" >ICO</Text></Button></Link>
+							<Link href={'/NFT'}><Button><Text color="black" >Mint NFTs</Text></Button></Link>
+							<Link href={'/whitelist'}><Button><Text color="black" >Start whitelist</Text></Button></Link>
+						</Button.Group>
+					</div>
+				</Row>
+				<Spacer y={2} />
+				<Card css={{bgColor: "#079992"}}>
+					<Grid.Container gap={2} justify="center" >
+						<Grid>
+						<Text h1
+							  size={55}
+							  css={{
+								  textGradient: "45deg, $blue600 -20%, $purple600 50%",
+								  mb: '4vh',
+								  textAlign: 'center'
 
-			<footer className={styles.footer}>
-				Made with &#10084;
-			</footer>
+							  }}
+							  weight="bold">WestPunks DAO</Text>
+						<Text color={'white'}  h3 size={25} css={{mb: '10vh'}}>
+							Your WestPunks NFT Balance: {nftBalance}
+							<br />
+							Treasury Balance: {formatEther(treasuryBalance)} ETH
+							<br />
+							Total Number of Proposals: {numProposals}
+						</Text>
+						<div>
+							<div className={styles.hideOnMobile}>
+								<Button.Group size="xl" color="success">
+									<Button onClick={() => setSelectedTab("Create Proposal")}>
+										<Text color="white" >Create Proposal</Text>
+									</Button>
+									<Button onClick={() => setSelectedTab("View Proposals")}>
+										<Text color="white" >View Proposals</Text>
+									</Button>
+								</Button.Group>
+							</div>
+
+							<div className={styles.hideOnDesktop} >
+								<Button.Group auto color="success">
+									<Button onClick={() => setSelectedTab("Create Proposal")}>
+										<Text color="white" >Create Proposal</Text>
+									</Button>
+									<Button onClick={() => setSelectedTab("View Proposals")}>
+										<Text color="white" >View Proposals</Text>
+									</Button>
+								</Button.Group>
+							</div>
+
+							{/*<button*/}
+							{/*	className={styles.button}*/}
+							{/*	onClick={() => setSelectedTab("Create Proposal")}*/}
+							{/*>*/}
+							{/*	Create Proposal*/}
+							{/*</button>*/}
+							{/*<button*/}
+							{/*	className={styles.button}*/}
+							{/*	onClick={() => setSelectedTab("View Proposals")}*/}
+							{/*>*/}
+							{/*	View Proposals*/}
+							{/*</button>*/}
+						</div>
+
+							{renderTabs()}
+
+						</Grid>
+
+						<Grid xs={6} className={styles.hideOnMobile}>
+							<img src="/nfts/4.svg" />
+						</Grid>
+					</Grid.Container>
+				</Card>
+
+			</Container>
 		</div>
-	);
+	)
 }

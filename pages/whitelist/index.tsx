@@ -94,7 +94,7 @@ export default function Home() {
 		if (walletConnected) {
 			if (joinedWhitelist) {
 				return (
-					<Text css={{mt: '10vh'}} size={30}>
+					<Text color={'white'} css={{mt: '10vh'}} size={30}>
 						Thanks for joining the Whitelist!
 					</Text>
 				);
@@ -166,9 +166,9 @@ export default function Home() {
 								  weight="bold">
 								WestPunks whitelist</Text>
 							<Text  h3 size={25} css={{mb: '10vh'}}>
-								Its an NFT collection for developers in Crypto.
+								Join the whitelist to have lower prices on our NFT presale!
 							</Text>
-							<Text h3 size={25}>
+							<Text color={'white'} h3 size={25}>
 								<b>{numberOfWhitelisted}</b>
 								{numberOfWhitelisted > 2 || numberOfWhitelisted == 0 ? ' people have ' : ' person has ' }
 								already joined the Whitelist

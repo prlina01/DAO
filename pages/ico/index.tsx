@@ -1,13 +1,14 @@
 import {BigNumber, Contract, providers, utils} from "ethers";
 import Head from "next/head";
-import React, {useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import Web3Modal from "web3modal";
 import {NFT_CONTRACT_ABI, NFT_CONTRACT_ADDRESS, TOKEN_CONTRACT_ABI, TOKEN_CONTRACT_ADDRESS,} from "../../constants/ico";
 import styles from "/styles/Home.module.css";
 import {JsonRpcSigner} from "@ethersproject/providers";
 import {parseEther} from "ethers/lib/utils";
-import {Button, Card, Container, Grid, Input, Row, Spacer, Text} from "@nextui-org/react";
+import {Button, Card, Container, FormElement, Grid, Input, Row, Spacer, Text} from "@nextui-org/react";
 import Link from "next/link";
+import {useForm} from "react-hook-form";
 
 export default function Home() {
 	// Create a BigNumber `0`
@@ -27,6 +28,8 @@ export default function Home() {
 	const [tokensMinted, setTokensMinted] = useState(zero);
 	const web3ModalRef = useRef<Web3Modal>(Web3Modal.prototype);
 	const isMetamaskRef = useRef(true)
+	const {register, setValue} = useForm()
+
 
 
 	/**
@@ -230,8 +233,8 @@ export default function Home() {
 		if (tokensToBeClaimed > 0) {
 			return (
 				<div>
-					<Text css={{mt: '10vh'}} size={30}>
-						{tokensToBeClaimed * 10} Tokens can be claimed!
+					<Text color={'white'} css={{mt: '10vh'}} size={30}>
+						<b>{tokensToBeClaimed * 10}</b> Tokens can be claimed!
 					</Text>
 					<Button css={{mt: '10vh'}} color={'success'} onClick={claimCryptoDevTokens}>
 						Claim Tokens
@@ -244,12 +247,12 @@ export default function Home() {
 				<Grid.Container>
 					<Grid xs={12} justify='center'>
 						<Input
-							type="number"
+							{...register('tokenAmount')}
+							rounded
+
 							placeholder="Amount of Tokens"
 							// BigNumber.from converts the `e.target.value` to a BigNumber
-							onChange={(e) => {
-								if(e.target.value) setTokenAmount(BigNumber.from(e.target.value))
-							}}
+							onChange={(e) => checkInputHandler(e)}
 						/>
 					</Grid>
 					<Grid xs={12} justify='center'>
@@ -267,6 +270,22 @@ export default function Home() {
 			</div>
 		);
 	};
+
+	const checkInputHandler = (e: ChangeEvent<FormElement>) => {
+		const value = e.target.value
+		const isValid = value.match(/^[1-9]\d*$/)
+
+		if(value.length === 0)
+			setTokenAmount(BigNumber.from(0))
+
+		if(!isValid || Number(value) > 10000) {
+			setValue('tokenAmount', value.substring(0,value.length - 1))
+		}
+		else {
+			setTokenAmount(BigNumber.from(e.target.value))
+			setValue('tokenAmount', value)
+		}
+	}
 
 	return (
 		<div>
@@ -307,8 +326,8 @@ export default function Home() {
 								  }}
 								  weight="bold">
 								WestPunks ICO</Text>
-							<Text  h3 size={25} css={{mb: '10vh'}}>
-								You can claim or mint WestPunks tokens here.
+							<Text  h3 size={20} css={{mb: '10vh'}}>
+								Mint tokens or claim <b>10</b> for every purchased WestPunks NFT
 							</Text>
 							{walletConnected ? (
 								<div>

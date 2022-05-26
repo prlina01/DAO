@@ -251,7 +251,7 @@ export default function Home() {
 		// If connected user is not the owner but presale hasn't started yet, tell them that
 		if (!presaleStarted) {
 			return (
-				<Text css={{mt: '10vh'}} size={30}>Presale hasn't started!</Text>
+				<Text color={'white'} css={{mt: '10vh'}} size={30}>Presale hasn't started!</Text>
 			);
 		}
 
@@ -259,9 +259,8 @@ export default function Home() {
 		if (presaleStarted && !presaleEnded) {
 			return (
 				<div>
-					<Text css={{mt: '10vh'}} size={30}>
-						Presale has started!!! If your address is whitelisted, Mint a Crypto
-						Dev 🥳
+					<Text color={'white'} css={{mt: '10vh'}} size={25}>
+						Presale has started!!! <br/> If your address is whitelisted, Mint a WestPunk :)
           			</Text>
 		  			<Button css={{mt: '10vh'}} color={'success'} onClick={presaleMint}>
 						Presale Mint 🚀
@@ -319,9 +318,9 @@ export default function Home() {
 								  weight="bold">
 								WestPunks NFT minting</Text>
 							<Text  h3 size={25} css={{mb: '10vh'}}>
-								Its an NFT collection for developers in Crypto.
+								Minting NFTs makes everyone happy!
 							</Text>
-							<Text h3 size={25}>
+							<Text color={'white'} h3 size={25}>
 								{tokenIdsMinted}/20 have been minted
 							</Text>
 							{renderButton()}
